@@ -17,7 +17,7 @@ export class Application {
                     urls.push({ key: rootKey, value });
                     return;
                 }
-                urls.push({ key: `${rootKey}/${key}`, value });
+                urls.push({ key: rootKey ? `${rootKey}/${key}` : key, value });
             });
             return urls;
         };
@@ -46,8 +46,10 @@ export class Application {
         let flatPath;
         const ignoredPaths: string[] = [];
         while (links.length && !flatPath) {
-            ignoredPaths.unshift(links.pop());
             flatPath = mapping.find(flatUrl => flatUrl.key === links.join('/'));
+            if (!flatPath) {
+                ignoredPaths.unshift(links.pop());
+            }
         }
 
         const url = flatPath ? `${flatPath.value.replace(/\/$/, '')}` : null;
